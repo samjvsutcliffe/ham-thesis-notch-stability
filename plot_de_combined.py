@@ -5,7 +5,7 @@ import os,re
 import numpy as np
 
 #chalk_dir ="./"
-chalk_dir = "/nobackup/rmvn14/thesis/ice-cliff-stability/"
+chalk_dir = "/nobackup/rmvn14/thesis/notch-stability/"
 #output_regex = re.compile("output-.*0.9$")
 output_regex = re.compile("output-.*1.0$")
 output_list = list(filter(output_regex.match,os.listdir(chalk_dir)))

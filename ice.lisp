@@ -17,10 +17,11 @@
 (defparameter *height* (parse-float:parse-float (if (uiop:getenv "HEIGHT") (uiop:getenv "HEIGHT") "400")))
 (defparameter *cliff-height* (parse-float:parse-float (if (uiop:getenv "CLIFF_HEIGHT") (uiop:getenv "CLIFF_HEIGHT") "100")))
 (defparameter *floatation* (parse-float:parse-float (if (uiop:getenv "FLOATATION") (uiop:getenv "FLOATATION") "0.9")))
+(defparameter *notch-ratio* (parse-float:parse-float (if (uiop:getenv "NOTCH-RATIO") (uiop:getenv "NOTCH-RATIO") "1")))
 
 (format t "Running~%")
 
-(defparameter *top-dir* (merge-pathnames "/nobackup/rmvn14/thesis/ice-cliff-stability/"))
+(defparameter *top-dir* (merge-pathnames "/nobackup/rmvn14/thesis/notch-stability/"))
 
 (let ((stability-dir (merge-pathnames (format nil "./data-cliff-stability/"))))
   (ensure-directories-exist stability-dir)
@@ -32,18 +33,18 @@
            *floatation*
                    ))
     (let ((res t))
-      (let* ((mps 2)
+      (let* ((mps 3)
              (output-dir (merge-pathnames  (format nil "./output-~f-~f/" height flotation) *top-dir*)))
         (format t "Outputting to ~A~%" output-dir)
         (format t "Problem ~f ~f~%" height flotation)
         (setup :refine 1d0
                :friction 0.5d0
-               :bench-length 0d0
+               :bench-length (* height *notch-ratio*)
                :ice-height height
                :mps mps
                :hydro-static nil
                :cryo-static t
-               :aspect 1d0
+               :aspect 4d0
                :slope 0d0
                :floatation-ratio flotation)
         (plot-domain)
@@ -53,7 +54,7 @@
               ;; (cl-mpm::sim-ghost-factor *sim*) (* 1d9 1d-3)
               (cl-mpm::sim-ghost-factor *sim*) nil
               )
-        (cl-mpm/setup::set-mass-filter *sim* 918d0 :proportion 1d-9)
+        (cl-mpm/setup::set-mass-filter *sim* 918d0 :proportion 1d-15)
         (let ((res (cl-mpm/dynamic-relaxation::run-quasi-time
                      *sim*
                      :output-dir output-dir

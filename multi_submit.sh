@@ -12,25 +12,10 @@ module load aocc/5.0.0
 module load aocl/5.0.0
 sbcl --dynamic-space-size 16000 --load "build.lisp" --quit
 
-for h in 300 350 400 450 500 550 
-do
-    for f in 1.0 0.95 0.9 0.85 0.8
-    do
-        export HEIGHT=$h
-        export FLOATATION=$f
-        sbatch batch_cliff_stab.sh
-    done
-done
-    
-for h in 600 650 700 750 850 900
-do
-    for f in 1.0 0.95 0.9
-    do
-        export HEIGHT=$h
-        export FLOATATION=$f
-        sbatch batch_cliff_stab.sh
-    done
-done
+export HEIGHT=$h
+export FLOATATION=$h
+export NOTCH_RATIO=1
+sbatch batch_cliff_stab.sh
 
 #export HEIGHT=450
 #export FLOATATION=0.9
