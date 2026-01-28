@@ -25,7 +25,7 @@ from multiprocessing import Pool
 
 
 
-top_dir = "./"
+top_dir = "/nobackup/rmvn14/thesis/notch-stability/"
 output_regex = re.compile("output-*")
 output_list = list(filter(output_regex.match,os.listdir(top_dir)))
 output_list.sort()

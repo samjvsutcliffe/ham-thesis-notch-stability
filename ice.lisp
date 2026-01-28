@@ -17,7 +17,7 @@
 (defparameter *height* (parse-float:parse-float (if (uiop:getenv "HEIGHT") (uiop:getenv "HEIGHT") "400")))
 (defparameter *cliff-height* (parse-float:parse-float (if (uiop:getenv "CLIFF_HEIGHT") (uiop:getenv "CLIFF_HEIGHT") "100")))
 (defparameter *floatation* (parse-float:parse-float (if (uiop:getenv "FLOATATION") (uiop:getenv "FLOATATION") "0.9")))
-(defparameter *notch-ratio* (parse-float:parse-float (if (uiop:getenv "NOTCH-RATIO") (uiop:getenv "NOTCH-RATIO") "1")))
+(defparameter *notch-ratio* (parse-float:parse-float (if (uiop:getenv "NOTCH_RATIO") (uiop:getenv "NOTCH_RATIO") "1")))
 
 (format t "Running~%")
 
@@ -34,17 +34,17 @@
                    ))
     (let ((res t))
       (let* ((mps 3)
-             (output-dir (merge-pathnames  (format nil "./output-~f-~f/" height flotation) *top-dir*)))
+             (output-dir (merge-pathnames  (format nil "./output-~f-~f-~f/" height flotation *notch-ratio*) *top-dir*)))
         (format t "Outputting to ~A~%" output-dir)
         (format t "Problem ~f ~f~%" height flotation)
-        (setup :refine 1d0
+        (setup :refine *ref*
                :friction 0.5d0
-               :bench-length (* height *notch-ratio*)
+               :bench-length (float (* height *notch-ratio*) 0d0)
                :ice-height height
                :mps mps
                :hydro-static nil
                :cryo-static t
-               :aspect 4d0
+               :aspect 6d0
                :slope 0d0
                :floatation-ratio flotation)
         (plot-domain)
@@ -59,17 +59,17 @@
                      *sim*
                      :output-dir output-dir
                      :dt 1d3
-                     :total-time 1d6
+                     :total-time 1d7
                      ;; :steps 1000
                      :dt-scale 1d0
                      :conv-criteria 1d-3
                      :substeps 50
                      :enable-damage t
-                     :enable-plastic nil
+                     :enable-plastic t
                      :min-adaptive-steps -6
-                     :max-adaptive-steps 4
+                     :max-adaptive-steps 10
                      :save-vtk-dr nil
-                     :save-vtk-loadstep nil
+                     :save-vtk-loadstep t
                      :elastic-solver 'cl-mpm/dynamic-relaxation::mpm-sim-dr-ul
                      :plotter (lambda (sim) (plot-domain))
                      :post-conv-step (lambda (sim) (plot-domain)))))
